@@ -61,3 +61,8 @@
 
 file_contexts:/sys/devices/virtual/graphics/fb[0-1]/msm_.*        u:object_r:sysfs_hal_gralloc:s0
 file_contexts:/sys/devices/fd900000.qcom,mdss_mdp/caps            u:object_r:sysfs_hal_gralloc:s0
+
+# Sysfs entry for audio
+/system/vendor/bin/init\.qcom\.devstart\.sh   u:object_r:init-qcom-devstart-sh_exec:s0
+/system/vendor/bin/init\.qcom\.devwait\.sh    u:object_r:init-qcom-devwait-sh_exec:s0
+/sys/kernel/boot_adsp/boot                    u:object_r:sysfs_audio:s0
