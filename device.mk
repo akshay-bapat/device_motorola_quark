@@ -123,6 +123,10 @@ PRODUCT_PACKAGES += \
     libqcomvoiceprocessingdescriptors \
     tinymix
 
+PRODUCT_COPY_FILES += \
+    device/motorola/quark/rootdir/etc/init.qcom.devwait.sh:$(TARGET_COPY_OUT_VENDOR)/bin/init.qcom.devwait.sh \
+    device/motorola/quark/rootdir/etc/init.qcom.devstart.sh:$(TARGET_COPY_OUT_VENDOR)/bin/init.qcom.devstart.sh
+
 PRODUCT_PACKAGES += \
     mbhc.bin \
     wcd9310_anc.bin
