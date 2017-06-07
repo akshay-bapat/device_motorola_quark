@@ -190,6 +190,9 @@ HWUI_COMPILE_FOR_PERF := true
 #Temp workaround
 ALLOW_MISSING_DEPENDENCIES=true
 
+# Use mke2fs to create ext4 images
+TARGET_USES_MKE2FS := true
+
 # Dexpreopt
 ifeq ($(HOST_OS),linux)
   ifneq ($(TARGET_BUILD_VARIANT),eng)
