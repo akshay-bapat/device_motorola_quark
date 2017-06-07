@@ -192,3 +192,6 @@ ifeq ($(HOST_OS),linux)
     endif
   endif
 endif
+
+# Use mke2fs to create ext4 images
+TARGET_USES_MKE2FS := true
