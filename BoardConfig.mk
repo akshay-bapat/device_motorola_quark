@@ -194,5 +194,8 @@ endif
 # Use mke2fs to create ext4 images
 TARGET_USES_MKE2FS := true
 
+# Binder API version
+TARGET_USES_64_BIT_BINDER := true
+
 #Temp workaround
 ALLOW_MISSING_DEPENDENCIES=true
