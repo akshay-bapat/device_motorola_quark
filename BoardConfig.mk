@@ -20,7 +20,10 @@ DEVICE_PATH := device/motorola/quark
 
 BOARD_VENDOR := motorola-qcom
 
-TARGET_SPECIFIC_HEADER_PATH := $(DEVICE_PATH)/include
+TARGET_FS_CONFIG_GEN += \
+    $(DEVICE_PATH)/fs_config/file_caps.fs \
+    $(DEVICE_PATH)/fs_config/qcom_aids.fs \
+    $(DEVICE_PATH)/fs_config/mot_aids.fs
 
 # Assert
 # TODO remove device ,,
