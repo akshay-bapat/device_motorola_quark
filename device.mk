@@ -333,3 +333,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # low audio flinger standby delay to reduce power consumption
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.audio.flinger_standbytime_ms=300
+
+# Treble packages
+$(call inherit-product, $(LOCAL_PATH)/treble.mk)
