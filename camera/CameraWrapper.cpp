@@ -43,6 +43,12 @@ static int camera_device_open(const hw_module_t *module, const char *name,
 static int camera_get_number_of_cameras(void);
 static int camera_get_camera_info(int camera_id, struct camera_info *info);
 
+static camera_notify_callback gUserNotifyCb = NULL;
+static camera_data_callback gUserDataCb = NULL;
+static camera_data_timestamp_callback gUserDataCbTimestamp = NULL;
+static camera_request_memory gUserGetMemory = NULL;
+static void *gUserCameraDevice = NULL;
+
 static struct hw_module_methods_t camera_module_methods =
 {
     .open = camera_device_open,
@@ -78,6 +84,25 @@ struct wrapper_camera_device_t
     int id;
     camera_device_t *vendor;
 };
+
+void camera_notify_cb(int32_t msg_type, int32_t ext1, int32_t ext2, void * /*user*/) {
+    gUserNotifyCb(msg_type, ext1, ext2, gUserCameraDevice);
+}
+
+void camera_data_cb(int32_t msg_type, const camera_memory_t *data, unsigned int index,
+        camera_frame_metadata_t *metadata, void * /*user*/) {
+    gUserDataCb(msg_type, data, index, metadata, gUserCameraDevice);
+}
+
+void camera_data_cb_timestamp(nsecs_t timestamp, int32_t msg_type,
+        const camera_memory_t *data, unsigned index, void * /*user*/) {
+    gUserDataCbTimestamp(timestamp, msg_type, data, index, gUserCameraDevice);
+}
+
+camera_memory_t* camera_get_memory(int fd, size_t buf_size,
+        uint_t num_bufs, void * /*user*/) {
+    return gUserGetMemory(fd, buf_size, num_bufs, gUserCameraDevice);
+}
 
 #define VENDOR_CALL(device, func, ...) ({ \
     wrapper_camera_device_t *__wrapper_dev = (wrapper_camera_device_t*) device; \
@@ -153,7 +178,14 @@ static void camera_set_callbacks(struct camera_device *device, camera_notify_cal
 
     ALOGV("%s->%08X->%08X", __FUNCTION__, (uintptr_t)device, (uintptr_t)(((wrapper_camera_device_t*)device)->vendor));
 
-    VENDOR_CALL(device, set_callbacks, notify_cb, data_cb, data_cb_timestamp, get_memory, user);
+    gUserNotifyCb = notify_cb;
+    gUserDataCb = data_cb;
+    gUserDataCbTimestamp = data_cb_timestamp;
+    gUserGetMemory = get_memory;
+    gUserCameraDevice = user;
+
+    VENDOR_CALL(device, set_callbacks, camera_notify_cb, camera_data_cb, camera_data_cb_timestamp,
+            camera_get_memory, user);
 }
 
 static void camera_enable_msg_type(struct camera_device *device, int32_t msg_type)
@@ -336,6 +368,9 @@ static char *camera_get_parameters(struct camera_device *device)
 
 static void camera_put_parameters(struct camera_device *device, char *params)
 {
+    if (!device)
+        return;
+
     if (params)
         free(params);
 }
