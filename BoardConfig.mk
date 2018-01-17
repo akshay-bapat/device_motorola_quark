@@ -27,6 +27,9 @@ TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
 TARGET_OTA_ASSERT_DEVICE := quark,quark_lra,quark_umts,quark_verizon,xt1225,xt1250,,xt1254
 BOARD_USES_QCOM_HARDWARE := true
 
+# Device manifest
+DEVICE_MANIFEST_FILE := $(DEVICE_PATH)/manifest.xml
+
 # Platform
 TARGET_BOARD_PLATFORM := apq8084
 TARGET_BOARD_PLATFORM_GPU := qcom-adreno420
