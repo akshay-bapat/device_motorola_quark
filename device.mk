@@ -336,3 +336,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 # Treble packages
 $(call inherit-product, $(LOCAL_PATH)/treble.mk)
+
+PRODUCT_ENFORCE_RRO_TARGETS := \
+    framework-res
