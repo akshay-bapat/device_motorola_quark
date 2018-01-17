@@ -115,6 +115,7 @@ TARGET_PROVIDES_LIBLIGHT := true
 
 # Media
 TARGET_USES_ION := true
+SF_START_GRAPHICS_ALLOCATOR_SERVICE := true
 # Fix video autoscaling on old OMX decoders
 TARGET_OMX_LEGACY_RESCALING := true
 
