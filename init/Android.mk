@@ -7,5 +7,6 @@ LOCAL_C_INCLUDES := system/core/init
 LOCAL_CFLAGS := -Wall -DANDROID_TARGET=\"$(TARGET_BOARD_PLATFORM)\"
 LOCAL_SRC_FILES := init_quark.cpp
 LOCAL_MODULE := libinit_quark
+LOCAL_SHARED_LIBRARIES := libbase liblog libutils
 
 include $(BUILD_STATIC_LIBRARY)
