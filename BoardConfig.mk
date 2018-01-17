@@ -184,3 +184,6 @@ HWUI_COMPILE_FOR_PERF := true
 
 # Snapdragon LLVM Compiler
 #TARGET_USE_SDCLANG := true
+
+#Temp workaround
+ALLOW_MISSING_DEPENDENCIES=true
