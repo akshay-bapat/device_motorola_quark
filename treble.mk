@@ -22,6 +22,10 @@ PRODUCT_PACKAGES += \
     android.hardware.graphics.mapper@2.0-impl \
     android.hardware.memtrack@1.0-impl
 
+# Light
+PRODUCT_PACKAGES += \
+    android.hardware.light@2.0-service.quark
+
 # RenderScript
 PRODUCT_PACKAGES += \
     android.hardware.renderscript@1.0-impl
