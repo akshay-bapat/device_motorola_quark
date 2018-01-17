@@ -298,7 +298,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     hostapd \
     wpa_supplicant \
-    wpa_supplicant.conf
+    wpa_supplicant.conf \
+    libwpa_client \
+    wificond \
+    wifilogd
 
 PRODUCT_PACKAGES += \
     WCNSS_qcom_cfg.ini \
