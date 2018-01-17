@@ -195,3 +195,6 @@ endif
 
 # Use mke2fs to create ext4 images
 TARGET_USES_MKE2FS := true
+
+#Temp workaround
+ALLOW_MISSING_DEPENDENCIES=true
