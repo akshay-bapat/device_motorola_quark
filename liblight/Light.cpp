@@ -67,7 +67,7 @@ static void handleBacklight(const LightState& state) {
 }
 
 static void handleNotification(const LightState& state) {
-    uint32_t Brightness;
+    uint32_t Brightness = 0;
     int32_t onMS, offMS;
 
     if (state.flashMode == Flash::TIMED) {
@@ -96,8 +96,6 @@ static void handleNotification(const LightState& state) {
            set(CHARGING_LED TRIGER, "none");
            set(CHARGING_LED BRIGHTNESS, Brightness);
        }
-
-       ALOGE("liblights notification led brightness=%d, timer 0n=%d, off=%d\n", Brightness, onMS, offMS);
     } else {
         char value[PROPERTY_VALUE_MAX];
         property_get("led.batton", value, NULL);
@@ -107,6 +105,7 @@ static void handleNotification(const LightState& state) {
            set(CHARGING_LED TRIGER, "battery-full");
         } else set(CHARGING_LED TRIGER, "none");// none alredy set LED_BRIGHTNESS to 0
     }
+    ALOGI("lights handleNotification brightness=%d, timer 0n=%d, off=%d\n", Brightness, onMS, offMS);
 }
 
 
