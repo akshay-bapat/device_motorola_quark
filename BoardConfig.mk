@@ -32,6 +32,7 @@ BOARD_USES_QCOM_HARDWARE := true
 
 # Device manifest
 DEVICE_MANIFEST_FILE := $(DEVICE_PATH)/manifest.xml
+DEVICE_MATRIX_FILE   := $(DEVICE_PATH)/compatibility_matrix.xml
 
 # Platform
 TARGET_BOARD_PLATFORM := apq8084
