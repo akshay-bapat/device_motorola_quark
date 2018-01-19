@@ -30,7 +30,7 @@ service imsqmidaemon /system/bin/imsqmidaemon
     user system
     seclabel u:r:init:s0
     socket ims_qmid stream 0660 system radio
-    group radio net_raw log qcom_diag
+    group radio net_raw log oem_2950
 
 # imsdatadaemon starts with root and UID will be downgraded to SYSTEM.
 service imsdatadaemon /system/bin/imsdatadaemon
@@ -38,7 +38,7 @@ service imsdatadaemon /system/bin/imsdatadaemon
     user system
     seclabel u:r:init:s0
     socket ims_datad stream 0660 system radio
-    group system wifi radio inet net_raw log qcom_diag net_admin
+    group system wifi radio inet net_raw log oem_2950 net_admin
     disabled
 
 on property:sys.ims.QMI_DAEMON_STATUS=1
@@ -49,7 +49,7 @@ service ims_rtp_daemon /system/bin/ims_rtp_daemon
    user system
    seclabel u:r:init:s0
    socket ims_rtpd stream 0660 system radio
-   group radio net_raw diag qcom_diag log inet
+   group radio net_raw diag oem_2950 log inet
    disabled
 
 on property:sys.ims.DATA_DAEMON_STATUS=1
