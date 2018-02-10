@@ -38,10 +38,14 @@
 
 #include "vendor_init.h"
 #include "property_service.h"
-#include "log.h"
-#include "util.h"
+#include <utils/Log.h>
+#include <android-base/properties.h>
+#include <android-base/logging.h>
 
 #include "init_apq8084.h"
+
+using android::base::GetProperty;
+using android::init::property_set;
 
 void property_override(char const prop[], char const value[])
 {
@@ -68,7 +72,7 @@ static int read_file2(const char *fname, char *data, int max_size)
 
     fd = open(fname, O_RDONLY);
     if (fd < 0) {
-        ERROR("failed to open '%s'\n", fname);
+        ALOGE("failed to open '%s'\n", fname);
         return 0;
     }
 
@@ -124,7 +128,7 @@ void vendor_load_properties()
     init_target_properties();
     init_alarm_boot_properties();
 
-    platform = property_get("ro.board.platform");
+    platform = GetProperty("ro.board.platform", "");
     if (platform != ANDROID_TARGET)
         return;
 
@@ -139,11 +143,11 @@ void vendor_load_properties()
     // Fsgid: XT1250 America = lra (america for verizon), lra_gsm (america for gsm network)
     // Fsgid: XT1254 Verizon = verizon (america verizon), verizon_gsm (america for gsm network)
 
-    fsgid = property_get("ro.boot.fsg-id");
-    carrier = property_get("ro.boot.carrier");
-    sku = property_get("ro.boot.hardware.sku");
-    radio = property_get("ro.boot.radio");
-    cid = property_get("ro.boot.cid");
+    fsgid = GetProperty("ro.boot.fsg-id", "");
+    carrier = GetProperty("ro.boot.carrier", "");
+    sku = GetProperty("ro.boot.hardware.sku", "");
+    radio = GetProperty("ro.boot.radio", "");
+    cid = GetProperty("ro.boot.cid", "");
 
     if (fsgid != "emea" && fsgid != "singlela" && fsgid != "lra" && fsgid != "lra_gsm" && fsgid != "verizon" && fsgid != "verizon_gsm") {
         if (sku == "XT1225" || (radio == "0x5" && cid == "0xC")) {
@@ -178,7 +182,7 @@ void vendor_load_properties()
         property_set("ro.com.google.clientidbase.ms", "android-verizon");
         property_set("ro.com.google.clientidbase.am", "android-verizon");
         property_set("ro.com.google.clientidbase.yt", "android-verizon");
-        INFO("Set properties for \"verizon\"!\n");
+        ALOGI("Set properties for \"verizon\"!\n");
     } else if (fsgid =="verizon_gsm") {
         // XT1254 - Droid Turbo, but set as gsm phone
         property_override("ro.build.product", "quark");
@@ -193,7 +197,7 @@ void vendor_load_properties()
         property_set("ro.com.google.clientidbase.ms", "android-verizon");
         property_set("ro.com.google.clientidbase.am", "android-verizon");
         property_set("ro.com.google.clientidbase.yt", "android-verizon");
-        INFO("Set properties for \"verizon_gsm\"!\n");
+        ALOGI("Set properties for \"verizon_gsm\"!\n");
     } else if (fsgid =="lra") {
         // XT1250 - Moto MAXX
         property_override("ro.build.product", "quark");
@@ -208,7 +212,7 @@ void vendor_load_properties()
         property_set("ro.cdma.home.operator.isnan", "1");
         property_set("ro.telephony.get_imsi_from_sim", "true");
         property_set("ro.cdma.data_retry_config", "max_retries=infinite,0,0,10000,10000,100000,10000,10000,10000,10000,140000,540000,960000");
-        INFO("Set properties for \"lra\"!\n");
+        ALOGI("Set properties for \"lra\"!\n");
     } else if (fsgid =="lra_gsm") {
         // XT1250 - Moto MAXX, but set as gsm phone
         property_override("ro.build.product", "quark");
@@ -223,7 +227,7 @@ void vendor_load_properties()
 	property_set("ro.com.google.clientidbase.ms", "android-motorola");
 	property_set("ro.com.google.clientidbase.am", "android-motorola");
 	property_set("ro.com.google.clientidbase.yt", "android-motorola");
-        INFO("Set properties for \"lra_gsm\"!\n");
+        ALOGI("Set properties for \"lra_gsm\"!\n");
     } else if (fsgid =="emea") {
         // XT1225 - Moto Turbo
         property_override("ro.build.product", "quark_umts");
@@ -238,7 +242,7 @@ void vendor_load_properties()
 	property_set("ro.com.google.clientidbase.ms", "android-motorola");
 	property_set("ro.com.google.clientidbase.am", "android-motorola");
 	property_set("ro.com.google.clientidbase.yt", "android-motorola");
-        INFO("Set properties for \"emea\"!\n");
+        ALOGI("Set properties for \"emea\"!\n");
     } else {
         // XT1225 - Moto MAXX (default)
         property_override("ro.build.product", "quark_umts");
@@ -253,6 +257,6 @@ void vendor_load_properties()
 	property_set("ro.com.google.clientidbase.ms", "android-motorola");
 	property_set("ro.com.google.clientidbase.am", "android-motorola");
 	property_set("ro.com.google.clientidbase.yt", "android-motorola");
-        INFO("Set properties for \"singlela\"!\n");
+        ALOGI("Set properties for \"singlela\"!\n");
     }
 }

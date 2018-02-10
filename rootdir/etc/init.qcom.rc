@@ -56,7 +56,7 @@ on init
     write /proc/self/coredump_filter "0x7f"
 
     # Symbols required for motorola blobs
-    export LD_SHIM_LIBS /system/bin/thermal-engine|libshims_thermal.so:/system/vendor/lib/libqc-opt.so|libshim_qcopt.so
+    export LD_SHIM_LIBS /system/vendor/bin/thermal-engine|libshims_thermal.so:/system/vendor/lib/libqc-opt.so|libshim_qcopt.so:/system/lib/libcutils.so|libshim_cutils_atomic.so
 
 on charger
     trigger early-fs
@@ -74,14 +74,82 @@ on moto-charger
     start charge_only_mode
 
 on fs
-    mount_all fstab.qcom
+    mount_all fstab.qcom --early
     restorecon_recursive /persist
+
+    # Start HW service manager early
+    start hwservicemanager
 
     # use /persist as phony PDS partition
     symlink /persist /pds
 
+on late-fs
+    # Start services for bootanim
+    start surfaceflinger
+    start bootanim
+    start configstore-hal-1-0
+    start gralloc-2-0
+
+    mount_all ./fstab.qcom --late
+
+on post-fs
+    mkdir /persist/camera 0755 oem_5004 oem_5004
+    mkdir /persist/camera/ledcal 0775 camera oem_5004
+    mkdir /persist/factory 0755 oem_5004 oem_5004
+    mkdir /persist/public 0755 oem_5004 oem_5004
+    mkdir /persist/public/atvc 0770 oem_5012 shell
+    mkdir /persist/public/battd 0755 oem_5000 oem_5004
+    mkdir /persist/public/hiddenmenu 0775 radio radio
+    mkdir /persist/public/hiddenmenu/data 0775 system oem_5004
+    mkdir /persist/public/locale 0700 system system
+    mkdir /persist/public/omadm 0700 radio radio
+    mkdir /persist/public/svcs 0770 system system
+    mkdir /persist/wifi 0755 oem_5004 oem_5004
+    mkdir /persist/bt 0755 oem_5004 bluetooth
+    mkdir /persist/wmdrm 0775 oem_5003 oem_5003
+    mkdir /persist/security 02770 oem_5007 oem_5007
+    mkdir /persist/batt_health 0755 oem_5001 oem_5001
+    mkdir /persist/mdm 0770 radio radio
+    mkdir /persist/sds 0700 vold vold
+
+    chown system oem_5004 /persist/public/hiddenmenu/life_calls
+    chown system oem_5004 /persist/public/hiddenmenu/life_timer
+    chown system oem_5004 /persist/public/hiddenmenu/data/mobile_data_tx
+    chown system oem_5004 /persist/public/hiddenmenu/data/mobile_data_rx
+    chown system oem_5004 /persist/public/hiddenmenu/data/wifi_data_tx
+    chown system oem_5004 /persist/public/hiddenmenu/data/wifi_data_rx
+    chown system oem_5004 /persist/public/hiddenmenu/data/pri_rate_intfc
+    chown system oem_5004 /persist/public/hiddenmenu/data/refurb_date
+    chown system oem_5004 /persist/public/hiddenmenu/data/refurb_status
+    chown system oem_5004 /persist/public/hiddenmenu/data/activation_date
+    chown system oem_5004 /persist/public/hiddenmenu/data/factoryreset_time
+
+    chmod 0664 /persist/public/hiddenmenu/life_calls
+    chmod 0664 /persist/public/hiddenmenu/life_timer
+    chmod 0664 /persist/public/hiddenmenu/data/mobile_data_tx
+    chmod 0664 /persist/public/hiddenmenu/data/mobile_data_rx
+    chmod 0664 /persist/public/hiddenmenu/data/wifi_data_tx
+    chmod 0664 /persist/public/hiddenmenu/data/wifi_data_rx
+    chmod 0644 /persist/public/hiddenmenu/data/pri_rate_intfc
+    chmod 0644 /persist/public/hiddenmenu/data/refurb_date
+    chmod 0644 /persist/public/hiddenmenu/data/refurb_status
+    chmod 0664 /persist/public/hiddenmenu/data/activation_date
+    chmod 0664 /persist/public/hiddenmenu/data/factoryreset_time
+
+    chown oem_5004 oem_5004 /persist/factory/fti
+    chmod 0660 /persist/factory/fti
+    chown oem_5004 oem_5004 /persist/factory/byte
+    chmod 0660 /persist/factory/byte
+    chmod 0660 /persist/wifi/wlan_mac.bin
+    chown oem_5004 oem_5004 /persist/bt/bt_bdaddr
+    chmod 0664 /persist/bt/bt_bdaddr
+    chmod 0600 /persist/whisper/whisper_only/vector0.bin
+
 # msm specific files that need to be created on /data
 on post-fs-data
+
+    # Start devices by sysfs trigger
+    start devstart_sh
 
     mkdir /data/tombstones 0771 system system
     mkdir /tombstones/modem 0771 system system
@@ -171,16 +239,16 @@ on post-fs-data
     mkdir /data/ss-ram-dumps/bp-dumps 0750 radio log
 
     # Create directory used by power_supply_logger
-    mkdir /data/power_supply_logger 0750 mot_pwric log
+    mkdir /data/power_supply_logger 0750 oem_5001 log
 
     # Permissions for Factory Test of Charging Paths
-    chown mot_pwric mot_pwric /sys/class/power_supply/battery/device/force_chg_auto_enable
-    chown mot_pwric mot_pwric /sys/class/power_supply/battery/device/force_chg_ibatt
-    chown mot_pwric mot_pwric /sys/class/power_supply/battery/device/force_chg_itrick
-    chown mot_pwric mot_pwric /sys/class/power_supply/battery/device/force_chg_iusb
-    chown mot_pwric mot_pwric /sys/class/power_supply/battery/device/force_chg_usb_suspend
-    chown mot_pwric mot_pwric /sys/class/power_supply/battery/device/force_chg_fail_clear
-    chown mot_pwric mot_pwric /sys/class/power_supply/battery/device/force_chg_usb_otg_ctl
+    chown oem_5001 oem_5001 /sys/class/power_supply/battery/device/force_chg_auto_enable
+    chown oem_5001 oem_5001 /sys/class/power_supply/battery/device/force_chg_ibatt
+    chown oem_5001 oem_5001 /sys/class/power_supply/battery/device/force_chg_itrick
+    chown oem_5001 oem_5001 /sys/class/power_supply/battery/device/force_chg_iusb
+    chown oem_5001 oem_5001 /sys/class/power_supply/battery/device/force_chg_usb_suspend
+    chown oem_5001 oem_5001 /sys/class/power_supply/battery/device/force_chg_fail_clear
+    chown oem_5001 oem_5001 /sys/class/power_supply/battery/device/force_chg_usb_otg_ctl
     mkdir /data/validity 0771 fingerp fingerp
     copy /system/etc/ValidityPersistentData /data/validity/ValidityPersistentData
     chown fingerp fingerp /data/validity/ValidityPersistentData
@@ -195,33 +263,22 @@ on post-fs-data
     mkdir /data/misc/audio_cutback 0770 radio audio
 
     # for signed data block installation
-    mkdir /data/local/dbvc 0750 system shell
-    mkdir /data/local/atvc 0775 system shell
+    mkdir /data/local/dbvc 0750 oem_5004 shell
 
     # Permissions CapSense firmware update
     chown radio radio /sys/devices/cycapsense_prog.1/cycapsense_fw
     chmod 0660 /sys/devices/cycapsense_prog.1/cycapsense_fw
 
-    # Start zram
-    swapon_all fstab.qcom
-    write /proc/sys/vm/page-cluster 0
-    write /proc/sys/vm/swappiness 25
-
 on early-boot
     # set RLIMIT_MEMLOCK to 64MB
     setrlimit 8 67108864 67108864
-
-    # Allow subsystem (modem etc) debugging
-    write /sys/module/subsystem_restart/parameters/enable_debug ${persist.sys.ssr.enable_debug}
-    write /sys/kernel/boot_adsp/boot 1
 
     # Annotate panics with helpful information
     chmod 640 /proc/apanic_annotate
     chown log log /proc/apanic_annotate
 
-    # Boot the audio
-    write /sys/kernel/boot_adsp/boot 1
-    setprop qcom.audio.init complete
+    # Busy loop to wait for devices booted by devstart_sh just in case device not ready
+    exec - root root system -- /vendor/bin/init.qcom.devwait.sh
 
 on boot
     chown bluetooth bluetooth /sys/module/bluetooth_power/parameters/power
@@ -342,7 +399,7 @@ on boot
 
     # STM401 driver parameter permissions
     chmod 0660 /sys/module/stm401/parameters/irq_disable
-    chown system system /sys/module/stm401/parameters/irq_disable
+    chown root oem_5004 /sys/module/stm401/parameters/irq_disable
 
     chmod 0220 /sys/class/graphics/fb0/te_enable
     chown system system /sys/class/graphics/fb0/te_enable
@@ -361,11 +418,11 @@ on boot
     mkdir /data/aplogd 0750 log log
 
     # create the necessary data dirs for tpapi with proper permission
-    mkdir /dev/tpapi 02770 mot_tpapi mot_tpapi
-    mkdir /data/tpapi 02770 mot_tpapi mot_tpapi
-    mkdir /data/tpapi/etc 02770 mot_tpapi mot_tpapi
-    mkdir /data/tpapi/etc/tpa 02770 mot_tpapi mot_tpapi
-    mkdir /data/tpapi/etc/tpa/persistent 02770 mot_tpapi mot_tpapi
+    mkdir /dev/tpapi 02770 oem_5007 oem_5007
+    mkdir /data/tpapi 02770 oem_5007 oem_5007
+    mkdir /data/tpapi/etc 02770 oem_5007 oem_5007
+    mkdir /data/tpapi/etc/tpa 02770 oem_5007 oem_5007
+    mkdir /data/tpapi/etc/tpa/persistent 02770 oem_5007 oem_5007
 
     # Quiet binder logs
     write /sys/module/binder/parameters/debug_mask 0x5
@@ -376,7 +433,13 @@ on boot
     insmod /system/lib/modules/touchx.ko
 
     # ESDFS
-    chown system system /proc/fs/esdfs/packages
+    chown oem_5016 root /proc/fs/esdfs/packages
+
+    # Allow subsystem (modem etc) debugging
+    write /sys/module/subsystem_restart/parameters/enable_debug ${persist.sys.ssr.enable_debug}
+
+    # Wifi firmware reload path
+    chown wifi wifi /sys/module/wlan/parameters/fwpath
 
 on property:sys.boot_completed=1
 
@@ -384,6 +447,11 @@ on property:sys.boot_completed=1
     rm /data/system/default_values
     start mpdecision
     start batt_health
+
+    # Start zram
+    swapon_all fstab.qcom
+    write /proc/sys/vm/page-cluster 0
+    write /proc/sys/vm/swappiness 25
 
 # corefile limit and ETB enabling
 on property:persist.debug.trace=1
@@ -423,20 +491,20 @@ on property:persist.env.fastdorm.enabled=true
 
 service atvc_core /system/bin/dbvc_atvc_property_set
     class core
-    user mot_atvc
-    group mot_tpapi
+    user oem_5012
+    group oem_5007
     oneshot
 
 service atvc /system/bin/dbvc_atvc_property_set
     class late_start
-    user mot_atvc
-    group mot_tpapi
+    user oem_5012
+    group oem_5007
     oneshot
 
 service batt_health /system/bin/batt_health
     class late_start
-    user mot_pwric
-    group log mot_pwric cache net_admin
+    user oem_5001
+    group log oem_5001 cache net_admin
     disabled
 
 service thermal-engine /system/vendor/bin/thermal-engine
@@ -512,7 +580,7 @@ service mmi-boot-sh /system/bin/sh /init.mmi.boot.sh
 
 service mmi-touch-sh /system/bin/sh /init.mmi.touch.sh atmel
     class disabled
-    user root
+    user root system oem_5004
     oneshot
 
 service ril-daemon /system/bin/rild
@@ -522,7 +590,7 @@ service ril-daemon /system/bin/rild
     socket cutback stream 660 media radio
     socket wpa_wlan0 dgram 660 wifi wifi
     user root
-    group radio cache inet misc audio sdcard_rw log qcom_diag net_raw diag wifi
+    group radio cache inet misc audio sdcard_rw log oem_2950 net_raw diag wifi
 
 on property:hw.aov.c55_ready=1
     start mmi-touch-sh
@@ -551,7 +619,7 @@ on property:wc_transport.start_hci=false
 service start_hci_filter /system/bin/wcnss_filter
     class late_start
     user bluetooth
-    group bluetooth qcom_diag
+    group bluetooth oem_2950
     disabled
 
 service config_bluetooth /system/bin/sh /system/etc/init.qcom.bt.sh "onboot"
@@ -584,7 +652,7 @@ service btsnoop /system/bin/btsnoop
 service qmuxd /system/bin/qmuxd
     class main
     user root
-    group radio audio bluetooth gps qcom_diag
+    group radio audio bluetooth wakelock gps oem_2950
 
 service netmgrd /system/bin/netmgrd
     class main
@@ -596,31 +664,15 @@ service netmgrd /system/bin/netmgrd
 on property:ro.data.large_tcp_window_size=true
     write /proc/sys/net/ipv4/tcp_adv_win_scale  2
 
-service p2p_supplicant /system/bin/wpa_supplicant \
-    -ip2p0 -Dnl80211 -c/data/misc/wifi/p2p_supplicant.conf \
-    -I/system/etc/wifi/p2p_supplicant_overlay.conf -N \
-    -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf \
+service wpa_supplicant /vendor/bin/hw/wpa_supplicant \
+    -ip2p0 -Dnl80211 -c/data/misc/wifi/p2p_supplicant.conf -N \
+    -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf -d \
     -I/system/etc/wifi/wpa_supplicant_overlay.conf \
-    -O/data/misc/wifi/sockets -puse_p2p_group_interface=1 -dd \
-    -e/data/misc/wifi/entropy.bin -g@android:wpa_wlan0
-#   we will start as root and wpa_supplicant will switch to user wifi
-#   after setting up the capabilities required for WEXT
-#   user wifi
-#   group wifi inet keystore
-    class main
-    socket wpa_wlan0 dgram 660 wifi wifi
-    disabled
-    oneshot
-
-service wpa_supplicant /system/bin/wpa_supplicant \
-    -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf \
-    -I/system/etc/wifi/wpa_supplicant_overlay.conf \
-    -O/data/misc/wifi/sockets -dd \
-    -e/data/misc/wifi/entropy.bin -g@android:wpa_wlan0
-#   we will start as root and wpa_supplicant will switch to user wifi
-#   after setting up the capabilities required for WEXT
-#   user wifi
-#   group wifi inet keystore
+    -e/data/misc/wifi/entropy.bin -g@android:wpa_wlan0 -puse_p2p_group_interface=1
+    #   we will start as root and wpa_supplicant will switch to user wifi
+    #   after setting up the capabilities required for WEXT
+    #   user wifi
+    #   group wifi inet keystore
     class main
     socket wpa_wlan0 dgram 660 wifi wifi
     disabled
@@ -651,3 +703,10 @@ service atfwd /system/bin/ATFWD-daemon
 service cnd /system/bin/cnd
     class late_start
     socket cnd stream 660 root inet
+
+service devstart_sh /vendor/bin/init.qcom.devstart.sh
+    class main
+    user root
+    group root system
+    disabled
+    oneshot

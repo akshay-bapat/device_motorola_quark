@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2014 The CyanogenMod Project
+# Copyright (C) 2017 The LineageOS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,18 +13,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-LOCAL_PATH:= $(call my-dir)
-# HAL module implemenation stored in
-# hw/<COPYPIX_HARDWARE_MODULE_ID>.<ro.board.platform>.so
-include $(CLEAR_VARS)
+[system/bin/imsdatadaemon]
+user: AID_SYSTEM
+group: AID_SYSTEM
+mode: 0755
+caps: NET_BIND_SERVICE
 
-LOCAL_SRC_FILES := lights.c
-LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/hw
-LOCAL_SHARED_LIBRARIES := liblog libcutils
-LOCAL_MODULE := lights.$(TARGET_BOARD_PLATFORM)
-LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE_OWNER := qcom
-LOCAL_PROPRIETARY_MODULE := true
-LOCAL_CFLAGS += -Wno-unused-parameter -Werror
+[system/bin/ims_rtp_daemon]
+user: AID_SYSTEM
+group: AID_RADIO
+mode: 0755
+caps: NET_BIND_SERVICE
 
-include $(BUILD_SHARED_LIBRARY)
+[system/bin/pm-service]
+user: AID_SYSTEM
+group: AID_SYSTEM
+mode: 0755
+caps: NET_BIND_SERVICE

@@ -13,15 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-LOCAL_PATH := device/motorola/quark
+DEVICE_PATH := device/motorola/quark
 
 BOARD_VENDOR := motorola-qcom
 
-TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
+TARGET_FS_CONFIG_GEN += \
+    $(DEVICE_PATH)/fs_config/file_caps.fs \
+    $(DEVICE_PATH)/fs_config/qcom_aids.fs \
+    $(DEVICE_PATH)/fs_config/mot_aids.fs
 
 # Assert
-TARGET_OTA_ASSERT_DEVICE := quark,quark_lra,quark_umts,quark_verizon,xt1225,xt1250,xt1254
+# TODO remove device ,,
+TARGET_OTA_ASSERT_DEVICE := quark,quark_lra,quark_umts,quark_verizon,xt1225,xt1250,,xt1254
 BOARD_USES_QCOM_HARDWARE := true
+
+# Device manifest
+DEVICE_MANIFEST_FILE := $(DEVICE_PATH)/manifest.xml
 
 # Platform
 TARGET_BOARD_PLATFORM := apq8084
@@ -42,6 +49,7 @@ TARGET_CPU_VARIANT := krait
 BOARD_KERNEL_CMDLINE := console=none androidboot.hardware=qcom msm_rtb.filter=0x37 ehci-hcd.park=3 vmalloc=400M androidboot.selinux=permissive
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_LZ4C_DT := true
+BOARD_KERNEL_IMAGE_NAME := zImage
 BOARD_KERNEL_PAGESIZE := 4096
 BOARD_KERNEL_SEPARATED_DT := true
 BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x01000000 --tags_offset 0x00000100
@@ -53,6 +61,7 @@ KERNEL_TOOLCHAIN := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_OS)-x86/arm/uber_a
 # stock toolchain
 #KERNEL_TOOLCHAIN := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_OS)-x86/arm/arm-eabi-4.8/bin
 TARGET_KERNEL_CROSS_COMPILE_PREFIX := arm-eabi-
+LZMA_RAMDISK_TARGETS := [recovery]
 
 # Init
 TARGET_INIT_VENDOR_LIB := libinit_quark
@@ -77,7 +86,7 @@ AUDIO_FEATURE_ENABLED_HWDEP_CAL := true
 TARGET_NEEDS_PLATFORM_TEXT_RELOCATIONS := true
 
 # Bluetooth
-BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(LOCAL_PATH)/bluetooth
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(DEVICE_PATH)/bluetooth
 BOARD_HAVE_BLUETOOTH_QCOM := true
 BOARD_HAS_QCA_BT_ROME := true
 
@@ -87,7 +96,7 @@ TARGET_HAS_LEGACY_CAMERA_HAL1 := true
 USE_DEVICE_SPECIFIC_CAMERA := true
 
 # CMHW
-BOARD_HARDWARE_CLASS += hardware/cyanogen/cmhw
+BOARD_HARDWARE_CLASS += hardware/lineage/lineagehw
 
 # Display
 MAX_EGL_CACHE_KEY_SIZE := 12*1024
@@ -111,6 +120,7 @@ TARGET_PROVIDES_LIBLIGHT := true
 
 # Media
 TARGET_USES_ION := true
+SF_START_GRAPHICS_ALLOCATOR_SERVICE := true
 # Fix video autoscaling on old OMX decoders
 TARGET_OMX_LEGACY_RESCALING := true
 
@@ -123,7 +133,7 @@ BOARD_GLOBAL_CFLAGS += -DUSE_RIL_VERSION_10
 BOARD_GLOBAL_CPPFLAGS += -DUSE_RIL_VERSION_10
 
 # Recovery
-TARGET_RECOVERY_FSTAB := $(LOCAL_PATH)/rootdir/etc/fstab.qcom
+TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/etc/fstab.full
 BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_23x41.h\"
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
@@ -171,12 +181,26 @@ BOARD_GLOBAL_CFLAGS += -DBATTERY_REAL_INFO
 HWUI_COMPILE_FOR_PERF := true
 
 # Qualcomm support
-TARGET_USES_QCOM_BSP := true
-TARGET_GLOBAL_CFLAGS += -DQCOM_BSP
-TARGET_GLOBAL_CPPFLAGS += -DQCOM_BSP
+#TARGET_USES_QCOM_BSP := true
+#TARGET_GLOBAL_CFLAGS += -DQCOM_BSP
+#TARGET_GLOBAL_CPPFLAGS += -DQCOM_BSP
 
 # Snapdragon LLVM Compiler
 #TARGET_USE_SDCLANG := true
+
+# Dexpreopt
+ifeq ($(HOST_OS),linux)
+    WITH_DEXPREOPT := true
+endif
+
+# Use mke2fs to create ext4 images
+TARGET_USES_MKE2FS := true
+
+# Binder API version
+TARGET_USES_64_BIT_BINDER := true
+
+#Temp workaround
+ALLOW_MISSING_DEPENDENCIES=true
 
 # TWRP
 TW_THEME := portrait_hdpi
