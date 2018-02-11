@@ -200,3 +200,6 @@ TARGET_USES_64_BIT_BINDER := true
 
 #Temp workaround
 ALLOW_MISSING_DEPENDENCIES=true
+
+# Boot animation
+TARGET_BOOTANIMATION_HALF_RES := true
