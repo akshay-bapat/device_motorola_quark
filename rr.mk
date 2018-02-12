@@ -14,5 +14,7 @@ PRODUCT_GMS_CLIENTID_BASE := android-motorola
 PRODUCT_BUILD_PROP_OVERRIDES += \
     TARGET_BUILD_FLAVOR=quark-$(TARGET_BUILD_VARIANT)
 
+# export the below before . build/envsetup.sh
+# export ROM_VVV=$(grep PRODUCT_VERSION vendor/rr/config/common.mk | head -1 | awk '{print $3}');
 PRODUCT_BUILD_PROP_OVERRIDES += \
-    BUILD_DISPLAY_ID=$(RR_VERSION)
+    BUILD_DISPLAY_ID=RR-O-v$(ROM_VVV)-$(shell date -u +%Y%m%d)-$(RR_BUILD)-$(RR_BUILDTYPE)
