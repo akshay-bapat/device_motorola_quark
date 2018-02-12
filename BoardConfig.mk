@@ -25,6 +25,11 @@ TARGET_FS_CONFIG_GEN += \
     $(DEVICE_PATH)/fs_config/qcom_aids.fs \
     $(DEVICE_PATH)/fs_config/mot_aids.fs
 
+# RR source has AID_QCOM_DIAG on system/core
+ifeq ($(RR_VERSION),)
+  TARGET_FS_CONFIG_GEN += qcom_aids_extra.fs
+endif
+
 # Assert
 # TODO remove device ,,
 TARGET_OTA_ASSERT_DEVICE := quark,quark_lra,quark_umts,quark_verizon,xt1225,xt1250,,xt1254
