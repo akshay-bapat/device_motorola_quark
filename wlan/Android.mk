@@ -5,8 +5,8 @@ LOCAL_MODULE := WCNSS_qcom_cfg.ini
 LOCAL_MODULE_CLASS := FAKE
 LOCAL_MODULE_TAGS := optional
 include $(BUILD_SYSTEM)/base_rules.mk
-$(LOCAL_BUILT_MODULE): TARGET := /system/etc/wifi/$(LOCAL_MODULE)
-$(LOCAL_BUILT_MODULE): SYMLINK := $(TARGET_OUT)/etc/firmware/wlan/qca_cld/$(LOCAL_MODULE)
+$(LOCAL_BUILT_MODULE): TARGET := /system/vendor/etc/wifi/$(LOCAL_MODULE)
+$(LOCAL_BUILT_MODULE): SYMLINK := $(TARGET_OUT)/vendor/etc/firmware/wlan/qca_cld/$(LOCAL_MODULE)
 $(LOCAL_BUILT_MODULE):
 	$(hide) echo "Symlink: $(SYMLINK) -> $(TARGET)"
 	$(hide) mkdir -p $(dir $@)
@@ -21,8 +21,8 @@ LOCAL_MODULE := WCNSS_qcom_wlan_nv.bin
 LOCAL_MODULE_CLASS := FAKE
 LOCAL_MODULE_TAGS := optional
 include $(BUILD_SYSTEM)/base_rules.mk
-$(LOCAL_BUILT_MODULE): TARGET := /system/etc/wifi/$(LOCAL_MODULE)
-$(LOCAL_BUILT_MODULE): SYMLINK := $(TARGET_OUT)/etc/firmware/wlan/qca_cld/$(LOCAL_MODULE)
+$(LOCAL_BUILT_MODULE): TARGET := /system/vendor/etc/wifi/$(LOCAL_MODULE)
+$(LOCAL_BUILT_MODULE): SYMLINK := $(TARGET_OUT)/vendor/etc/firmware/wlan/qca_cld/$(LOCAL_MODULE)
 $(LOCAL_BUILT_MODULE):
 	$(hide) echo "Symlink: $(SYMLINK) -> $(TARGET)"
 	$(hide) mkdir -p $(dir $@)
@@ -38,7 +38,7 @@ LOCAL_MODULE_CLASS := FAKE
 LOCAL_MODULE_TAGS := optional
 include $(BUILD_SYSTEM)/base_rules.mk
 $(LOCAL_BUILT_MODULE): TARGET := /persist/$(LOCAL_MODULE)
-$(LOCAL_BUILT_MODULE): SYMLINK := $(TARGET_OUT)/etc/firmware/wlan/qca_cld/$(LOCAL_MODULE)
+$(LOCAL_BUILT_MODULE): SYMLINK := $(TARGET_OUT)/vendor/etc/firmware/wlan/qca_cld/$(LOCAL_MODULE)
 $(LOCAL_BUILT_MODULE):
 	$(hide) echo "Symlink: $(SYMLINK) -> $(TARGET)"
 	$(hide) mkdir -p $(dir $@)
@@ -54,7 +54,7 @@ LOCAL_MODULE_CLASS := FAKE
 LOCAL_MODULE_TAGS := optional
 include $(BUILD_SYSTEM)/base_rules.mk
 $(LOCAL_BUILT_MODULE): TARGET := /persist/$(LOCAL_MODULE)
-$(LOCAL_BUILT_MODULE): SYMLINK := $(TARGET_OUT)/etc/firmware/wlan/qca_cld/$(LOCAL_MODULE)
+$(LOCAL_BUILT_MODULE): SYMLINK := $(TARGET_OUT)/vendor/etc/firmware/wlan/qca_cld/$(LOCAL_MODULE)
 $(LOCAL_BUILT_MODULE):
 	$(hide) echo "Symlink: $(SYMLINK) -> $(TARGET)"
 	$(hide) mkdir -p $(dir $@)
@@ -69,8 +69,8 @@ LOCAL_MODULE := qca_cld_wlan.ko
 LOCAL_MODULE_CLASS := FAKE
 LOCAL_MODULE_TAGS := optional
 include $(BUILD_SYSTEM)/base_rules.mk
-$(LOCAL_BUILT_MODULE): TARGET := /system/lib/modules/wlan.ko
-$(LOCAL_BUILT_MODULE): SYMLINK := $(TARGET_OUT)/lib/modules/qca_cld/$(LOCAL_MODULE)
+$(LOCAL_BUILT_MODULE): TARGET := /system/vendor/lib/modules/wlan.ko
+$(LOCAL_BUILT_MODULE): SYMLINK := $(TARGET_OUT)/vendor/lib/modules/qca_cld/$(LOCAL_MODULE)
 $(LOCAL_BUILT_MODULE):
 	$(hide) echo "Symlink: $(SYMLINK) -> $(TARGET)"
 	$(hide) mkdir -p $(dir $@)
