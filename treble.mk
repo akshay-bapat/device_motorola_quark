@@ -20,20 +20,22 @@ PRODUCT_PACKAGES += \
     android.hardware.audio.effect@2.0-impl
 
 # Bluetooth
-#PRODUCT_PACKAGES += \
-#    android.hardware.bluetooth@1.0-impl
+PRODUCT_PACKAGES += \
+    android.hardware.bluetooth@1.0-impl \
+    android.hardware.bluetooth@1.0-service
 
 # Camera
 PRODUCT_PACKAGES += \
-    android.hardware.camera.provider@2.4-impl-legacy \
+    android.hardware.camera.provider@2.4-impl \
+    android.hardware.camera.provider@2.4-service
 
 # DRM
-#PRODUCT_PACKAGES += \
-#    android.hardware.drm@1.0-impl
+PRODUCT_PACKAGES += \
+    android.hardware.drm@1.0-impl
 
 # GNSS
-#PRODUCT_PACKAGES += \
-#    android.hardware.gnss@1.0-impl
+PRODUCT_PACKAGES += \
+    android.hardware.gnss@1.0-impl
 
 # Graphics
 PRODUCT_PACKAGES += \
@@ -48,19 +50,30 @@ PRODUCT_PACKAGES += \
 
 # Light
 PRODUCT_PACKAGES += \
-    android.hardware.light@2.0-impl
+    android.hardware.light@2.0-impl \
+    android.hardware.light@2.0-service
 
 # NFC
-#PRODUCT_PACKAGES += \
-#    android.hardware.nfc@1.0-impl-bcm
+PRODUCT_PACKAGES += \
+    android.hardware.nfc@1.0-impl
+
+# Power
+PRODUCT_PACKAGES += \
+    android.hardware.power@1.0-service \
+    android.hardware.power@1.0-impl
+
+# Radio
+PRODUCT_PACKAGES += \
+	android.hardware.radio@1.0 \
+	android.hardware.radio.deprecated@1.0
 
 # RenderScript
 PRODUCT_PACKAGES += \
     android.hardware.renderscript@1.0-impl
 
 # Sensors
-#PRODUCT_PACKAGES += \
-#    android.hardware.sensors@1.0-impl
+PRODUCT_PACKAGES += \
+    android.hardware.sensors@1.0-impl
 
 # Thermal
 PRODUCT_PACKAGES += \
